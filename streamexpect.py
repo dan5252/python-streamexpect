@@ -737,7 +737,8 @@ def _echo_bytes(value):
     sys.stdout.write(value.decode('ascii', errors='backslashreplace'))
 
 
-def wrap(stream, unicode=False, window=1024, echo=False, close_stream=True):
+def wrap(stream, unicode=False, window=1024, echo=False, close_stream=True,
+         custom_callback_override=None):
     """Wrap a stream to implement expect functionality.
 
     This function provides a convenient way to wrap any Python stream (a
@@ -773,7 +774,9 @@ def wrap(stream, unicode=False, window=1024, echo=False, close_stream=True):
     else:
         raise TypeError('stream must have either read or recv method')
 
-    if echo and unicode:
+    if custom_callback_override:
+        callback = custom_callback_override
+    elif echo and unicode:
         callback = _echo_text
     elif echo and not unicode:
         callback = _echo_bytes
